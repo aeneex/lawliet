@@ -4,6 +4,7 @@
 // level meter, engine status, and debounced INI persistence.
 
 #include "lawliet/gui/GuiController.hpp"
+#include "lawliet/gui/IconPixels.hpp"
 #include "lawliet/audio/AudioEngine.hpp"
 #include "lawliet/config/Settings.hpp"
 
@@ -54,6 +55,14 @@ bool GuiController::init() {
         glfwTerminate();
         return false;
     }
+
+    // Set application window icon
+    GLFWimage iconImg;
+    iconImg.width = kIconWidth;
+    iconImg.height = kIconHeight;
+    iconImg.pixels = const_cast<unsigned char*>(kIconPixels);
+    glfwSetWindowIcon(m_window, 1, &iconImg);
+
     glfwMakeContextCurrent(m_window);
     glfwSwapInterval(1); // Enable VSync
 

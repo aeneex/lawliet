@@ -27,7 +27,13 @@ target_link_libraries(lawliet_core
 )
 
 # ── Executable (WIN32 subsystem app) ──────────────────────────────────────────
-add_executable(lawliet WIN32 main.cpp)
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/lawliet.rc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/lawliet.rc"
+    @ONLY
+)
+
+add_executable(lawliet WIN32 main.cpp "${CMAKE_CURRENT_BINARY_DIR}/lawliet.rc")
 target_link_libraries(lawliet PRIVATE lawliet_core)
 
 # Target linker flags: static MinGW runtime and GUI subsystem (-mwindows)
