@@ -5,6 +5,8 @@ out/
 *.log
 lawliet.ini
 lawliet.ini.tmp
+**/lawliet.ini
+**/lawliet.ini.tmp
 CMakeUserPresets.json
 compile_commands.json
 .vs/

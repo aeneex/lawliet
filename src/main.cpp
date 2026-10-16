@@ -37,8 +37,16 @@ int main(int argc, char* argv[])
         std::cerr << "[main] GUI init failed.\n";
         return 1;
     }
+    std::string screenshotPath;
+    for (int i = 1; i < argc; ++i) {
+        if (std::string(argv[i]) == "--screenshot" && i + 1 < argc) {
+            screenshotPath = argv[i + 1];
+            break;
+        }
+    }
+
     engine.start(); // Auto-start streaming on launch just like Clownfish
-    gui.run(engine, settings);
+    gui.run(engine, settings, screenshotPath);
 
     return 0;
 }
