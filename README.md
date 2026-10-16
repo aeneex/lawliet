@@ -2,6 +2,14 @@
 
 Lawliet is a lightweight Windows voice changer that layers a lower and a higher pitch copy of your voice, inspired by L from *Death Note*.
 
+## Installation & Downloads
+
+Pre-built ready-to-use releases for Windows 10/11 (64-bit) are available in [`release/`](release/) and on [GitHub Releases](https://github.com/aeneex/lawliet/releases):
+
+- **[Lawliet-Setup.exe](release/Lawliet-Setup.exe):** Native Windows GUI installer. Installs to `%LOCALAPPDATA%\Programs\Lawliet`, creates Start Menu and Desktop shortcuts, and registers an uninstaller in Windows Apps & Features.
+- **[Lawliet-v0.1.0-Windows-x64-Portable.zip](release/Lawliet-v0.1.0-Windows-x64-Portable.zip):** Portable ZIP package (no installation required).
+- **[lawliet.exe](release/lawliet.exe):** Direct standalone portable executable.
+
 ## Requirements
 
 - Windows 10 or Windows 11 (64-bit)

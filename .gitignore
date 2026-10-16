@@ -1,7 +1,5 @@
 build/
 out/
-release/
-*.exe
 *.o
 *.obj
 *.log
@@ -12,3 +10,8 @@ compile_commands.json
 .vs/
 .vscode/
 .idea/
+
+# Binaries: ignore executables generally, but allow the distribution release package
+*.exe
+!release/
+!release/**
