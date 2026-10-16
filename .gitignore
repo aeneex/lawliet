@@ -1,0 +1,13 @@
+build/
+out/
+*.exe
+*.o
+*.obj
+*.log
+lawliet.ini
+lawliet.ini.tmp
+CMakeUserPresets.json
+compile_commands.json
+.vs/
+.vscode/
+.idea/
