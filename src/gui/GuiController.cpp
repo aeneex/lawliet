@@ -303,7 +303,7 @@ void GuiController::renderMainWindow(lawliet::audio::AudioEngine& engine, lawlie
         const std::string outLabel = settings.outputDevice.empty()
             ? (engine.isCablePresent() ? "CABLE Input (VB-Audio Virtual Cable)" : "(Default Playback Device)")
             : settings.outputDevice;
-        if (ImGui::BeginCombo("Output", outLabel.c_str())) {
+        if (ImGui::BeginCombo("Output (for Discord)", outLabel.c_str())) {
             const bool isDef = settings.outputDevice.empty();
             if (ImGui::Selectable("(Default / CABLE Input)", isDef)) {
                 settings.outputDevice = "";
@@ -425,6 +425,7 @@ void GuiController::renderMainWindow(lawliet::audio::AudioEngine& engine, lawlie
     ImGui::Separator();
     ImGui::TextDisabled("Discord: set input to \"CABLE Output\"");
     ImGui::TextDisabled("Turn Krisp and echo cancellation off");
+    ImGui::TextDisabled("Double voice? Uncheck \"Listen to this device\" in Windows Sound Panel");
 
     ImGui::End();
 }
