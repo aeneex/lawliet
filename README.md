@@ -1,6 +1,8 @@
-# Lawliet
-
-Lawliet is a lightweight Windows voice changer that layers a lower and a higher pitch copy of your voice, inspired by L from *Death Note*.
+<div align="center">
+  <img src="assets/icons/Lawliet.png" alt="Lawliet Logo" width="128" height="128" />
+  <h1>Lawliet</h1>
+  <p>Lawliet is a lightweight Windows voice changer that layers a lower and a higher pitch copy of your voice, inspired by L from <em>Death Note</em>.</p>
+</div>
 
 ## Installation & Downloads
 
