@@ -59,3 +59,5 @@ Settings are saved automatically to `lawliet.ini` next to the executable (deboun
 - **Dear ImGui:** MIT License ([external/imgui/LICENSE.txt](external/imgui/LICENSE.txt))
 - **GLFW:** zlib/libpng License ([external/glfw/LICENSE.md](external/glfw/LICENSE.md))
 - **miniaudio:** Public Domain / MIT-0 ([external/miniaudio/LICENSE](external/miniaudio/LICENSE))
+- **Iosevka Font:** SIL Open Font License 1.1 ([assets/fonts/OFL.txt](assets/fonts/OFL.txt))
+

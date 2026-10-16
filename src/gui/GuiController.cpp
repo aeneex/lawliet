@@ -24,9 +24,40 @@
 #include <string>
 #include <vector>
 
+#ifdef _WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+#include <windows.h>
+#endif
+
 namespace lawliet::gui {
 
 namespace {
+
+constexpr int IDR_FONT_IOSEVKA = 200;
+
+struct EmbeddedFont {
+    const void* data = nullptr;
+    DWORD size = 0;
+};
+
+EmbeddedFont getEmbeddedFont() {
+#ifdef _WIN32
+    HRSRC hRes = FindResourceA(NULL, MAKEINTRESOURCEA(IDR_FONT_IOSEVKA), MAKEINTRESOURCEA(10) /* RT_RCDATA */);
+    if (hRes) {
+        HGLOBAL hMem = LoadResource(NULL, hRes);
+        if (hMem) {
+            void* pData = LockResource(hMem);
+            DWORD size = SizeofResource(NULL, hRes);
+            if (pData && size > 100) {
+                return { pData, size };
+            }
+        }
+    }
+#endif
+    return { nullptr, 0 };
+}
 
 std::string findIosevkaFontPath() {
     // 1. Check relative paths (app directory, assets, fonts)
@@ -285,12 +316,7 @@ bool GuiController::init() {
     io.IniFilename = nullptr; // Phase 6: do not write imgui.ini
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-    // Load Iosevka Nerd Font (or clean TrueType fallback) to avoid bitmap pixelation
-    std::string fontPath = findIosevkaFontPath();
-    if (fontPath.empty()) {
-        fontPath = findFallbackFontPath();
-    }
-
+    // Load Iosevka Nerd Font (embedded in executable resource, or local disk, or system fallback)
     ImFontConfig fontConfig;
     fontConfig.OversampleH = 2;
     fontConfig.OversampleV = 1;
@@ -307,12 +333,31 @@ bool GuiController::init() {
     const float baseFontSize = 17.5f;
     const float headerFontSize = 24.0f;
 
-    if (!fontPath.empty() && std::filesystem::exists(fontPath)) {
-        std::cout << "[GuiController] Loading font: " << fontPath << '\n';
-        m_fontRegular = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), baseFontSize, &fontConfig, glyphRanges);
+    // 1. Check embedded executable resource first (100% self-contained standalone binary)
+    EmbeddedFont embedded = getEmbeddedFont();
+    if (embedded.data && embedded.size > 0) {
+        std::cout << "[GuiController] Loading embedded Iosevka font from PE resource (" << embedded.size << " bytes)\n";
+        fontConfig.FontDataOwnedByAtlas = false;
+        m_fontRegular = io.Fonts->AddFontFromMemoryTTF(const_cast<void*>(embedded.data), (int)embedded.size, baseFontSize, &fontConfig, glyphRanges);
 
         ImFontConfig headerConfig = fontConfig;
-        m_fontHeader = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), headerFontSize, &headerConfig, glyphRanges);
+        m_fontHeader = io.Fonts->AddFontFromMemoryTTF(const_cast<void*>(embedded.data), (int)embedded.size, headerFontSize, &headerConfig, glyphRanges);
+    }
+
+    // 2. If not embedded (e.g. tests or external build without .rc), check filesystem
+    if (!m_fontRegular) {
+        std::string fontPath = findIosevkaFontPath();
+        if (fontPath.empty()) {
+            fontPath = findFallbackFontPath();
+        }
+        if (!fontPath.empty() && std::filesystem::exists(fontPath)) {
+            std::cout << "[GuiController] Loading font from disk: " << fontPath << '\n';
+            fontConfig.FontDataOwnedByAtlas = true;
+            m_fontRegular = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), baseFontSize, &fontConfig, glyphRanges);
+
+            ImFontConfig headerConfig = fontConfig;
+            m_fontHeader = io.Fonts->AddFontFromFileTTF(fontPath.c_str(), headerFontSize, &headerConfig, glyphRanges);
+        }
     }
 
     if (!m_fontRegular) {
@@ -516,7 +561,7 @@ void GuiController::renderMainWindow(lawliet::audio::AudioEngine& engine, lawlie
     ImGui::Spacing();
 
     // ── 4. Gains ───────────────────────────────────────────────────────────────
-    if (ImGui::CollapsingHeader("Gains", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::CollapsingHeader("Gains")) {
         if (ImGui::SliderFloat("Low gain", &settings.lowGain, 0.0f, 1.0f, "%.2f", ImGuiSliderFlags_AlwaysClamp)) {
             engine.setLowGain(settings.lowGain);
             markDirty();
@@ -550,7 +595,7 @@ void GuiController::renderMainWindow(lawliet::audio::AudioEngine& engine, lawlie
         devicesLoaded = true;
     }
 
-    if (ImGui::CollapsingHeader("Devices", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::CollapsingHeader("Devices")) {
         ImGui::TextUnformatted("Audio Routing");
         const float refreshWidth = ImGui::CalcTextSize("↻ Refresh").x + ImGui::GetStyle().FramePadding.x * 2.0f + 10.0f;
         ImGui::SameLine(ImGui::GetWindowWidth() - refreshWidth - ImGui::GetStyle().WindowPadding.x);

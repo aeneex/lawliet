@@ -1,4 +1,6 @@
 1 ICON "@PROJECT_SOURCE_DIR@/assets/icons/lawliet.ico"
+200 RCDATA "@PROJECT_SOURCE_DIR@/assets/fonts/IosevkaNerdFontPropo-SemiBold.ttf"
+
 
 1 VERSIONINFO
 FILEVERSION     0,1,0,0
